@@ -67,6 +67,10 @@ config CPU_FREQ_DEFAULT_GOV_POWERSAVE
 	  the frequency statically to the lowest frequency supported by
 	  the CPU.
 
+config CPU_FREQ_DEFAULT_GOV_DEVILQ
+	bool "devilq"
+	select CPU_FREQ_GOV_DEVILQ
+
 config CPU_FREQ_DEFAULT_GOV_USERSPACE
 	bool "userspace"
 	select CPU_FREQ_GOV_USERSPACE
@@ -265,6 +269,13 @@ config CPU_FREQ_GOV_ADAPTIVE
 
 config CPU_FREQ_GOV_PEGASUSQ
 	tristate "'pegasusq' cpufreq policy governor"
+
+config CPU_FREQ_GOV_DEVILQ
+        tristate "'devilq' cpufreq governor"
+        depends on CPU_FREQ
+	default y
+        help
+          'devilq' - based off lulzactiveq and zzmoove
 
 config CPU_FREQ_GOV_SLP
 	tristate "'slp' cpufreq policy governor"
