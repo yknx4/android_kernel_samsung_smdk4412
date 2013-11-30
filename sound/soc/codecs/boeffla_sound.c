@@ -83,7 +83,6 @@ static unsigned int debug_register;		// current register to show in debug regist
 // internal state variables
 static bool is_call;			// is currently a call active?
 static bool is_headphone;		// is headphone connected?
-static bool is_socket;			// is something connected to the headphone socket?
 static bool is_fmradio;			// is stock fm radio app active?
 static bool is_eq;				// is an equalizer (headphone or speaker tuning) active?
 static bool is_eq_headphone;	// is equalizer for headphone or speaker currently?
@@ -107,10 +106,6 @@ static bool debug(int level);
 static bool check_for_call(void);
 static bool check_for_headphone(void);
 static bool check_for_fmradio(void);
-<<<<<<< HEAD
-static void handler_headphone_detection(void);
-=======
->>>>>>> ef5add4... Boeffla-Sound: Engine 1.6.3
 
 static void set_headphone(void);
 static unsigned int get_headphone_l(unsigned int val);
@@ -533,75 +528,9 @@ bool check_for_headphone(void)
 	}
 
 	return false;
-<<<<<<< HEAD
-}
-
-
-static bool check_for_fmradio(void)
-{
-	struct snd_soc_dapm_widget *w;
-
-	// loop through widget list to find widget for FM radio and check
-	// power state of it
-	list_for_each_entry(w, &codec->card->widgets, list)
-	{
-		if (w->dapm != &codec->dapm)
-			continue;
-
-		switch (w->id)
-		{
-			case snd_soc_dapm_line:
-				if (w->name)
-				{
-					if(strstr(w->name,"FM In") != 0)
-					{
-						if((w->power) != 0)
-							return true;
-						else
-							return false;
-					}
-				}
-				break;
-			case snd_soc_dapm_mic:
-			case snd_soc_dapm_hp:
-			case snd_soc_dapm_spk:
-			case snd_soc_dapm_micbias:
-			case snd_soc_dapm_dac:
-			case snd_soc_dapm_adc:
-			case snd_soc_dapm_pga:
-			case snd_soc_dapm_out_drv:
-			case snd_soc_dapm_mixer:
-			case snd_soc_dapm_mixer_named_ctl:
-			case snd_soc_dapm_supply:
-				break;
-			default:
-				break;
-		}
-	}
-
-	return false;
-}
-
-
-static void handler_headphone_detection(void)
-{
-	if (check_for_headphone())
-	{
-		is_headphone = true;
-
-		if (debug(DEBUG_NORMAL))
-			printk("Boeffla-sound: Headphone or headset found\n");
-
-		// Handler: switch equalizer and mono downmix, set speaker volume (for privacy mode)
-		set_eq();
-		set_mono_downmix();
-		set_speaker();
-	}
-=======
 #else
 	return check_for_dapm(snd_soc_dapm_hp, "HP");
 #endif
->>>>>>> ef5add4... Boeffla-Sound: Engine 1.6.3
 }
 
 static bool debug (int level)
@@ -1463,10 +1392,7 @@ static void initialize_global_variables(void)
 	is_call = false;
 	is_headphone = false;
 	is_fmradio = false;
-<<<<<<< HEAD
-=======
 
->>>>>>> ef5add4... Boeffla-Sound: Engine 1.6.3
 	is_eq = false;
 	is_eq_headphone = false;
 	is_mic_controlled=false;
@@ -1520,17 +1446,6 @@ static void reset_boeffla_sound(void)
 	// reset mic level
 	set_mic_level();
 
-<<<<<<< HEAD
-	// initialize jacket, headphone, call and fm radio status
-	val = wm8994_read(codec, WM1811_JACKDET_CTRL);
-	is_socket = check_for_socket(val);
-
-	is_call = check_for_call(true, 0);
-	handler_headphone_detection();
-	is_fmradio = check_for_fmradio();
-
-=======
->>>>>>> ef5add4... Boeffla-Sound: Engine 1.6.3
 	// print debug info
 	if (debug(DEBUG_NORMAL))
 		printk("Boeffla-sound: reset_boeffla_sound completed\n");
@@ -2421,13 +2336,8 @@ static ssize_t debug_info_show(struct device *dev, struct device_attribute *attr
 	sprintf(buf+strlen(buf), "WM8994_AIF1_DAC1_FILTERS_2: %d\n", val);
 
 	// add the current states of call, headphone and fmradio
-<<<<<<< HEAD
-	sprintf(buf+strlen(buf), "is_call:%d is_socket: %d is_headphone:%d is_fmradio:%d\n",
-				is_call, is_socket, is_headphone, is_fmradio);
-=======
 	sprintf(buf+strlen(buf), "is_call:%d is_headphone:%d is_fmradio:%d\n",
 				is_call, is_headphone, is_fmradio);
->>>>>>> ef5add4... Boeffla-Sound: Engine 1.6.3
 
 	// add the current states of internal headphone handling and mono downmix
 	sprintf(buf+strlen(buf), "is_eq:%d is_eq_headphone: %d is_mono_downmix: %d\n",
@@ -2693,3 +2603,4 @@ static void boeffla_sound_exit(void)
 
 module_init(boeffla_sound_init);
 module_exit(boeffla_sound_exit);
+
